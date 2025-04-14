@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}Тема: {{ thread['title'] }}{% endblock %}
+
+{% block content %}
+<div class="thread-container">
+    <div class="thread-header">
+        <h2>{{ thread['title'] }}</h2>
+        <p class="text-muted">Автор теми: {{ thread['author'] }}</p>
+    </div>
+
+    <div class="comments-section">
+        {% if comments %}
+            {% for comment in comments %}
+                <div class="comment-card">
+                    <div class="comment-user">
+                        <div class="avatar"></div>
+                        <strong>{{ comment['author'] }}</strong>
+                    </div>
+                    <div class="comment-content">
+                        <p>{{ comment['content'] }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-comments">
+                <p>Коментарів ще немає. Будь першим!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if session.get('username') %}
+        <div class="comment-form">
+            <form method="post" action="{{ url_for('add_comment', thread_id=thread['id']) }}">
+                <div class="form-group">
+                    <label for="content">Ваш коментар:</label>
+                    <textarea name="content" id="content" rows="4" class="form-control" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Надіслати</button>
+            </form>
+        </div>
+    {% else %}
+        <p class="text-center text-muted">Увійдіть, щоб залишити коментар.</p>
+    {% endif %}
+</div>
+{% endblock %}

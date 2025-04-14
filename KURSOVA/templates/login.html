@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>Вхід</h2>
+    {% if error %}
+        <p class="error-message">{{ error }}</p>
+    {% endif %}
+    <form method="POST" class="auth-form">
+        <input type="text" name="username" placeholder="Ім’я користувача" required>
+        <input type="password" name="password" placeholder="Пароль" required>
+        <button type="submit" class="btn">Увійти</button>
+    </form>
+    <p>Не маєш акаунта? <a href="{{ url_for('register') }}">Зареєструйся</a></p>
+</div>
+{% endblock %}

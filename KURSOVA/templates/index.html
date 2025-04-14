@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}Головна{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4">Останні теми</h2>
+
+  {% if threads %}
+    {% for thread in threads %}
+      <div class="thread-list-item">
+        <div class="thread-avatar"></div>
+
+        <div class="thread-content">
+          <div class="d-flex align-items-center">
+            <a href="{{ url_for('thread', thread_id=thread['id']) }}" class="thread-title">{{ thread['title'] }}</a>
+            {% if loop.index0 == 0 %}
+              <span class="thread-badge">Нове</span>
+            {% endif %}
+          </div>
+          <div class="thread-meta">
+            Автор: {{ thread['username'] }} • ID теми: {{ thread['id'] }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Немає створених тем.</p>
+  {% endif %}
+</div>
+{% endblock %}

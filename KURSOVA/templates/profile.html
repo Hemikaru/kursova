@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}Профіль{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h2 class="mb-4">Мій профіль</h2>
+
+    <div class="d-flex align-items-center mb-4">
+        <img src="{{ user['avatar'] or url_for('static', filename='default_avatar.png') }}" alt="avatar" width="80" height="80" class="rounded-circle me-3">
+        <div>
+            <h4>{{ user['username'] }}</h4>
+            <p class="text-muted">Рівень: {{ level }} | Досвід: {{ xp }}/{{ next_level_xp }}</p>
+            <div class="progress" style="width: 300px">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ xp_percent }}%" aria-valuenow="{{ xp_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+
+    <form action="/profile/update" method="POST" class="mb-5">
+        <div class="mb-3">
+            <label class="form-label">Новий нікнейм</label>
+            <input type="text" name="username" class="form-control" value="{{ user['username'] }}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Посилання на аватар</label>
+            <input type="text" name="avatar" class="form-control" value="{{ user['avatar'] }}">
+        </div>
+        <button class="btn btn-primary" type="submit">Зберегти</button>
+    </form>
+
+    <h4 class="mb-3">Історія коментарів</h4>
+    {% if comments %}
+        <ul class="list-group">
+        {% for c in comments %}
+            <li class="list-group-item">
+                <strong>{{ c['thread_title'] }}</strong> — <em>{{ c['created_at'] }}</em>
+                <p>{{ c['content'] }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">Коментарів ще немає.</p>
+    {% endif %}
+</div>
+{% endblock %}

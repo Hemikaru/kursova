@@ -1,6 +1,6 @@
 /* === Загальні стилі === */
 body {
-    background-color: #1c1c1c;
+    background-color: #121212;
     color: #e0e0e0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -17,12 +17,11 @@ a:hover {
 }
 
 header, footer {
-    background-color: #121212;
+    background-color: #1c1c1c;
     padding: 1rem;
     text-align: center;
     border-bottom: 1px solid #333;
 }
-
 nav a {
     color: #cccccc;
     margin: 0 10px;
@@ -36,46 +35,33 @@ nav a {
 
 /* === Кнопки === */
 .btn, button {
-    padding: 0.4rem 1rem;
+    padding: 0.5rem 1rem;
     background-color: #00bcd4;
     color: white;
     border: none;
-    border-radius: 4px;
-    text-transform: uppercase;
+    border-radius: 6px;
     font-weight: bold;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 .btn:hover, button:hover {
     background-color: #008fa3;
 }
 
 /* === Картки / Теми === */
-.card {
-    background-color: #2a2a2a;
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 0 5px rgba(0,0,0,0.5);
-    transition: transform 0.2s ease;
-}
-.card:hover {
-    transform: scale(1.01);
-}
-
 .thread-list-item {
     display: flex;
     align-items: center;
-    padding: 1rem;
-    background-color: #2a2a2a;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    background-color: #1e1e1e;
     border-left: 5px solid #00bcd4;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
     transition: background-color 0.2s;
 }
 .thread-list-item:hover {
-    background-color: #3a3a3a;
+    background-color: #2a2a2a;
 }
 
 .thread-avatar {
@@ -84,6 +70,7 @@ nav a {
     background-color: #555;
     border-radius: 50%;
     margin-right: 1rem;
+    flex-shrink: 0;
 }
 
 .thread-content {
@@ -93,7 +80,7 @@ nav a {
 .thread-title {
     font-size: 1.2rem;
     color: #00bcd4;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.3rem;
 }
 
 .thread-meta {
@@ -104,19 +91,20 @@ nav a {
 .thread-badge {
     background-color: #ff5722;
     color: white;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
-    margin-left: 1rem;
+    margin-left: 0.5rem;
 }
 
 /* === Сторінка теми === */
 .thread-container {
-    background-color: #1e1e2f;
+    background-color: #1e1e1e;
     color: #ddd;
     padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    margin-bottom: 30px;
 }
 
 .thread-header {
@@ -127,15 +115,16 @@ nav a {
 
 /* === Коментарі === */
 .comments-section {
-    margin-bottom: 30px;
+    margin-top: 20px;
 }
 
 .comment-card {
     background-color: #2a2a3d;
-    border: 1px solid #333;
+    border: 1px solid #444;
     border-radius: 6px;
     padding: 15px;
     margin-bottom: 15px;
+    position: relative;
 }
 
 .comment-user {
@@ -147,9 +136,36 @@ nav a {
 .comment-user .avatar {
     width: 40px;
     height: 40px;
-    background-color: #444;
+    background-color: #555;
     border-radius: 50%;
     margin-right: 10px;
+}
+
+.comment-user .username {
+    font-weight: bold;
+    color: #00bcd4;
+}
+
+.comment-actions {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 8px;
+}
+
+.comment-actions button {
+    background: none;
+    border: none;
+    color: #bbb;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+.comment-actions button:hover {
+    background-color: #333;
+    color: #fff;
 }
 
 .comment-content p {
@@ -157,6 +173,15 @@ nav a {
     color: #ccc;
 }
 
+.no-comments {
+    background-color: #2a2a2a;
+    padding: 20px;
+    text-align: center;
+    border-radius: 6px;
+    color: #888;
+}
+
+/* === Форма коментаря === */
 .comment-form textarea,
 .comment-form input {
     width: 100%;
@@ -184,22 +209,12 @@ nav a {
     border-radius: 5px;
     cursor: pointer;
 }
-
 .comment-form button:hover {
     background-color: #3344cc;
 }
 
-.no-comments {
-    background-color: #2a2a3d;
-    padding: 20px;
-    text-align: center;
-    border-radius: 6px;
-    color: #888;
-}
-
-/* === Форма авторизації / реєстрації === */
+/* === Авторизація / реєстрація === */
 .auth-container {
-    width: 100%;
     max-width: 400px;
     margin: 60px auto;
     background: #1e1e1e;
@@ -226,7 +241,6 @@ nav a {
     color: #fff;
     font-size: 15px;
 }
-
 .auth-form input:focus {
     background-color: #3a3a3a;
     outline: none;
@@ -244,7 +258,6 @@ nav a {
     font-weight: bold;
     cursor: pointer;
 }
-
 .auth-form .btn:hover {
     background-color: #009fb3;
 }
@@ -253,12 +266,10 @@ nav a {
     color: #ccc;
     margin-top: 15px;
 }
-
 .auth-container a {
     color: #00bcd4;
     text-decoration: none;
 }
-
 .auth-container a:hover {
     color: #ffffff;
 }
@@ -268,33 +279,7 @@ nav a {
     margin-bottom: 15px;
 }
 
-/* Загальний стиль */
-body {
-    background-color: #121212;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #e0e0e0;
-    margin: 0;
-    padding: 0;
-}
-
-/* Контейнер */
-.container {
-    max-width: 700px;
-    margin: 50px auto;
-    padding: 40px;
-    background-color: #1e1e1e;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
-}
-
-/* Заголовок */
-h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #ffffff;
-}
-
-/* Стилі для форми */
+/* === Форма створення теми === */
 form label {
     display: block;
     margin-bottom: 8px;
@@ -320,26 +305,63 @@ form textarea {
 }
 
 form button {
-    background-color: #007bff;
+    background-color: #00bcd4;
+    padding: 12px 20px;
+    font-size: 15px;
+    border-radius: 6px;
+    font-weight: bold;
     color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
 }
-
 form button:hover {
-    background-color: #0056b3;
+    background-color: #009fb3;
 }
 
-/* Посилання */
-a {
-    color: #66b3ff;
-    text-decoration: none;
+/* Поля вводу: input, textarea */
+input[type="text"],
+input[type="password"],
+input[type="file"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: #1f1f1f;
+    color: #f0f0f0; /* Яскравіший текст */
+    font-size: 1rem;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
-a:hover {
-    text-decoration: underline;
+/* При фокусі: підсвітка */
+input:focus,
+textarea:focus {
+    background-color: #2a2a2a;
+    border-color: #00bcd4;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 188, 212, 0.6);
+}
+
+textarea {
+    background-color: #1e1e1e !important;
+    color: #f1f1f1 !important;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    resize: vertical;
+    transition: 0.2s;
+}
+
+textarea::placeholder {
+    color: #888;
+    opacity: 1; /* важливо! інакше placeholder може зникати */
+}
+
+textarea:focus {
+    background-color: #262626;
+    color: #ffffff;
+    border-color: #00bcd4;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 188, 212, 0.3);
 }

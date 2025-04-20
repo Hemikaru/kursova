@@ -4,43 +4,126 @@
 
 {% block content %}
 <div class="thread-container">
-    <div class="thread-header">
-        <h2>{{ thread['title'] }}</h2>
-        <p class="text-muted">Автор теми: {{ thread['author'] }}</p>
+    <div class="thread-header d-flex justify-content-between align-items-center">
+        <div>
+            <h2>{{ thread['title'] }}</h2>
+            <p class="text-muted">Автор теми: {{ thread['username'] }}</p>
+        </div>
+        <div>
+            <button class="btn btn-sm btn-outline-success me-1" onclick="voteThread({{ thread.id }}, 1)">👍</button>
+            <span id="thread-votes">{{ thread.vote_count or 0 }}</span>
+            <button class="btn btn-sm btn-outline-danger ms-1" onclick="voteThread({{ thread.id }}, -1)">👎</button>
+        </div>
     </div>
 
-    <div class="comments-section">
+    <div class="comments-section mt-4">
         {% if comments %}
             {% for comment in comments %}
-                <div class="comment-card">
-                    <div class="comment-user">
-                        <div class="avatar"></div>
-                        <strong>{{ comment['author'] }}</strong>
+                <div class="comment-card" id="comment-{{ comment.id }}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="comment-user d-flex align-items-center">
+                            <div class="avatar me-2"></div>
+                            <strong>{{ comment.username }}</strong>
+                            <span class="ms-2 badge bg-info text-dark">Lv. {{ comment.xp // 100 }}</span>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">⚙</button>
+                            <ul class="dropdown-menu">
+                                {% if session.user_id == comment.user_id %}
+                                    <li><a class="dropdown-item" href="#" onclick="toggleEdit({{ comment.id }}); return false;">✏️ Редагувати</a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item" href="#" onclick="replyTo('{{ comment.username }}', {{ comment.id }}); return false;">💬 Відповісти</a></li>
+                                    <li><a class="dropdown-item" href="/user/{{ comment.user_id }}">👤 Профіль</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#">🚩 Поскаржитись</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
                     </div>
-                    <div class="comment-content">
-                        <p>{{ comment['content'] }}</p>
+
+                    <div id="display-{{ comment.id }}">
+                        <p class="mt-2">{{ comment.content }}</p>
+                    </div>
+
+                    {% if session.user_id == comment.user_id %}
+                    <form method="post" action="{{ url_for('edit_comment', comment_id=comment.id) }}" id="edit-form-{{ comment.id }}" class="d-none">
+                        <textarea name="content" rows="3" class="form-control mt-2 mb-2">{{ comment.content }}</textarea>
+                        <button type="submit" class="btn btn-sm btn-success">💾 Зберегти</button>
+                        <button type="button" class="btn btn-sm btn-secondary ms-2" onclick="toggleEdit({{ comment.id }})">Скасувати</button>
+                    </form>
+                    {% endif %}
+
+                    <div class="mt-2">
+                        <button class="btn btn-sm btn-outline-success me-1" onclick="voteComment({{ comment.id }}, 1)">👍</button>
+                        <span id="comment-votes-{{ comment.id }}">{{ comment.vote_count or 0 }}</span>
+                        <button class="btn btn-sm btn-outline-danger ms-1" onclick="voteComment({{ comment.id }}, -1)">👎</button>
                     </div>
                 </div>
             {% endfor %}
         {% else %}
-            <div class="no-comments">
+            <div class="no-comments text-center text-muted mt-4">
                 <p>Коментарів ще немає. Будь першим!</p>
             </div>
         {% endif %}
     </div>
 
     {% if session.get('username') %}
-        <div class="comment-form">
-            <form method="post" action="{{ url_for('add_comment', thread_id=thread['id']) }}">
-                <div class="form-group">
-                    <label for="content">Ваш коментар:</label>
-                    <textarea name="content" id="content" rows="4" class="form-control" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary mt-2">Надіслати</button>
-            </form>
-        </div>
+    <div class="comment-form mt-4">
+        <form method="post" action="{{ url_for('add_comment', thread_id=thread.id) }}">
+            <input type="hidden" name="parent_id" id="parent_id">
+            <div class="form-group">
+                <label for="content">Ваш коментар:</label>
+                <textarea name="content" id="content" rows="4" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Надіслати</button>
+        </form>
+    </div>
     {% else %}
-        <p class="text-center text-muted">Увійдіть, щоб залишити коментар.</p>
+        <p class="text-center text-muted mt-4">Увійдіть, щоб залишити коментар.</p>
     {% endif %}
 </div>
+
+<!-- JS -->
+<script>
+    function toggleEdit(commentId) {
+        const form = document.getElementById(`edit-form-${commentId}`);
+        const display = document.getElementById(`display-${commentId}`);
+        form.classList.toggle('d-none');
+        display.classList.toggle('d-none');
+    }
+
+    function replyTo(username, commentId) {
+        const textarea = document.getElementById('content');
+        const parentInput = document.getElementById('parent_id');
+        parentInput.value = commentId;
+
+        textarea.focus();
+        if (!textarea.value.includes(`@${username}`)) {
+            textarea.value = `@${username} ` + textarea.value;
+        }
+
+        window.scrollTo({ top: textarea.offsetTop - 100, behavior: 'smooth' });
+    }
+
+    function voteThread(threadId, voteType) {
+        fetch(`/vote/thread/${threadId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ vote: voteType })
+        }).then(res => res.json())
+          .then(data => {
+              document.getElementById('thread-votes').textContent = data.vote_count;
+          });
+    }
+
+    function voteComment(commentId, voteType) {
+        fetch(`/vote/comment/${commentId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ vote: voteType })
+        }).then(res => res.json())
+          .then(data => {
+              document.getElementById(`comment-votes-${commentId}`).textContent = data.vote_count;
+          });
+    }
+</script>
 {% endblock %}

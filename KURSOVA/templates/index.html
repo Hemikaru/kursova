@@ -4,23 +4,29 @@
 
 {% block content %}
 <div class="container">
-  <h2 class="mb-4">Останні теми</h2>
+  <h2 class="latest-topics-title">Останні теми</h2>
 
   {% if threads %}
     {% for thread in threads %}
-      <div class="thread-list-item">
-        <div class="thread-avatar"></div>
-
-        <div class="thread-content">
-          <div class="d-flex align-items-center">
-            <a href="{{ url_for('thread', thread_id=thread['id']) }}" class="thread-title">{{ thread['title'] }}</a>
-            {% if loop.index0 == 0 %}
-              <span class="thread-badge">Нове</span>
-            {% endif %}
+      <div class="thread-list-item d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <div class="thread-avatar me-3"></div>
+          <div class="thread-content">
+            <div class="d-flex align-items-center">
+              <a href="{{ url_for('thread', thread_id=thread['id']) }}" class="thread-title">{{ thread['title'] }}</a>
+              {% if loop.index0 == 0 %}
+                <span class="thread-badge ms-2">Нове</span>
+              {% endif %}
+            </div>
+            <div class="thread-meta">
+              Автор: {{ thread['username'] }} • ID теми: {{ thread['id'] }}
+            </div>
           </div>
-          <div class="thread-meta">
-            Автор: {{ thread['username'] }} • ID теми: {{ thread['id'] }}
-          </div>
+        </div>
+        <div class="text-end">
+          <button class="btn btn-sm btn-outline-success me-1" onclick="voteThread({{ thread.id }}, 1)">👍</button>
+          <span id="thread-votes-{{ thread.id }}">{{ thread.vote_count or 0 }}</span>
+          <button class="btn btn-sm btn-outline-danger ms-1" onclick="voteThread({{ thread.id }}, -1)">👎</button>
         </div>
       </div>
     {% endfor %}
@@ -28,4 +34,18 @@
     <p>Немає створених тем.</p>
   {% endif %}
 </div>
+
+<script>
+  function voteThread(threadId, voteType) {
+    fetch(`/vote/thread/${threadId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ vote: voteType })
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById(`thread-votes-${threadId}`).textContent = data.vote_count;
+    });
+  }
+</script>
 {% endblock %}
